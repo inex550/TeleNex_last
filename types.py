@@ -40,6 +40,30 @@ class Sticker:
         self.file_size: int = json_stick.get('file_size')
         self.set_name: Int = json_stick.get('set_name')
 
+class ReplyKeyboardMarkup:
+    def __init__(self, keyboard: list, resize_keyboard: bool = False, one_time_keyboard: bool = False):
+        self.keyboard = keyboard
+        self.resize_keyboard = resize_keyboard
+        self.one_time_keyboard = one_time_keyboard
+
+    def to_dict(self):
+        keyboard_json = [ [ btn.to_dict() for btn in btns_line ] for btns_line in self.keyboard ]
+
+        return {
+            'keyboard': keyboard_json,
+            'resize_keyboard': self.resize_keyboard,
+            'one_time_keyboard': self.one_time_keyboard
+        }
+
+class KeyboardButton:
+    def __init__(self, text: str):
+        self.text = text
+
+    def to_dict(self):
+        return {
+            'text': self.text
+        }
+
 class _TextCmdOpt():
     def __init__(self, func, reg: bool, orig: str):
         self.func = func

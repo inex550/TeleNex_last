@@ -1,5 +1,6 @@
 import requests
 from . import types
+import json
 
 
 class Bot:
@@ -49,8 +50,16 @@ class Bot:
             if msg.sticker.file_id in self.__stick_cmds:
                 self.__stick_cmds[msg.sticker.file_id](msg)
 
-    def send_msg(self, chat_id: int, text: str):
-        self.__get_method('sendMessage', {'chat_id': chat_id, 'text': text})
+    def send_msg(self, chat_id: int, text: str, keyboard = None):
+        msg_json = {
+            'chat_id': chat_id, 
+            'text': text, 
+        }
+
+        if keyboard:
+            msg_json['reply_markup'] = json.dumps(keyboard.to_dict())
+
+        self.__get_method('sendMessage', msg_json)
 
     def send_sticker(self, chat_id: int, stick: str):
         self.__get_method('sendSticker', {'chat_id': chat_id, 'sticker': stick})
