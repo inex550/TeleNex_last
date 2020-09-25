@@ -19,7 +19,7 @@ class User:
         self.first_name: str = json_from.get('first_name')
         self.last_name: str  = json_from.get('last_name')
         self.is_bot: bool    = json_from.get('is_bot')
-        self.lang_code: str  = json_from.get('languege_code')
+        self.lang_code: str  = json_from.get('language_code')
         self.username: str   = json_from.get('username')
 
 class Chat:
@@ -40,9 +40,31 @@ class Sticker:
         self.file_size: int = json_stick.get('file_size')
         self.set_name: Int = json_stick.get('set_name')
 
-class ReplyKeyboardMarkup:
-    def __init__(self, keyboard: list, resize_keyboard: bool = False, one_time_keyboard: bool = False):
-        self.keyboard = keyboard
+class _KeyboardMarkupBase:
+    def __init__(self, keyboard: list = None):
+        if keyboard:
+            self.keyboard = keyboard
+        else:
+            self.keyboard = [[]]
+
+    def item(self, line, el):
+        return self.keyboard[line][el]
+    
+    def line(self, line):
+        return self.keyboard[line]
+
+    def add_line(self, btns_line: list = None):
+        if btns_line:
+            self.keyboard.append(btns_line)
+        else:
+            self.keyboard.append([])
+
+    def add_btn(self, btn, line = -1):
+        self.keyboard[line].append(btn)
+
+class ReplyKeyboardMarkup(_KeyboardMarkupBase):
+    def __init__(self, keyboard: list= None, resize_keyboard: bool = False, one_time_keyboard: bool = False):
+        super().__init__(keyboard)
         self.resize_keyboard = resize_keyboard
         self.one_time_keyboard = one_time_keyboard
 
@@ -55,6 +77,15 @@ class ReplyKeyboardMarkup:
             'one_time_keyboard': self.one_time_keyboard
         }
 
+class InlineKeyboardMarkup(_KeyboardMarkupBase):
+    def __init__(self, keyboard: list = None):
+        super().__init__(keyboard)
+
+    def to_dict(self):
+        return {
+            'inline_keyboard': [[btn.to_dict() for btn in btns_line] for btns_line in self.keyboard]
+        }
+
 class KeyboardButton:
     def __init__(self, text: str):
         self.text = text
@@ -64,7 +95,33 @@ class KeyboardButton:
             'text': self.text
         }
 
-class _TextCmdOpt():
+class InlineKeyboardButton:
+    def __init__(self, text: str, url: str=None, callback_data=None):
+        self.text: str = text
+        self.url: str = url
+        self.callback_data = callback_data
+
+    def to_dict(self):
+        btn_dict = { 'text': self.text }
+
+        if self.url:
+            btn_dict['url'] = self.url
+
+        if self.callback_data:
+            btn_dict['callback_data'] = self.callback_data
+
+        return btn_dict
+
+class CallbackQuery:
+    def __init__(self, json_callback: dict):
+        self.id: str = json_callback.get('id')
+        self.user: User = User(json_callback['from'])
+        self.data: str = json_callback.get('data')
+
+        if 'message' in json_callback:
+            self.message = Message(json_callback['message'])
+
+class _TextOpt:
     def __init__(self, func, reg: bool, orig: str):
         self.func = func
         self.reg = reg
@@ -75,3 +132,25 @@ class _TextCmdOpt():
             return text.lower() == self.orig.lower()
         else:
             return text == self.orig
+
+class _CmdOpt:
+    def __init__(self, func, cmd: str, params: list = []):
+        self.func   = func
+        self.cmd    = cmd
+        self.params = params
+
+    @staticmethod
+    def process(pattern: str):
+        data = pattern.split()
+
+        cmd = data[0]
+
+        params = pattern[1:]
+        for i in range( len(params) ):
+            if params[i][0] == '<' and params[i][-1] == '>':
+                param_type = params[i][1:-1]
+
+                if param_type == 'int':
+                    params[i] = int
+                elif param_type == 'str':
+                    params[i] = None

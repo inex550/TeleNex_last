@@ -13,6 +13,10 @@ class Bot:
         self.__stick_cmds = {}
         self.__global_cmds = {}
 
+        self.__callbacks = {}
+
+        self.__current_chat_id = None
+
     def __get_method(self, method: str, params: dict = {}) -> dict:
         response = requests.get(self.url + method, data=params)
         return response.json()
@@ -26,6 +30,8 @@ class Bot:
 
     def __process_message(self, json_msg: dict):
         msg = types.Message(json_msg)
+
+        self.__current_chat_id = msg.chat.id
 
         if 'all' in self.__global_cmds:
             self.__global_cmds['all'](msg)
@@ -50,19 +56,50 @@ class Bot:
             if msg.sticker.file_id in self.__stick_cmds:
                 self.__stick_cmds[msg.sticker.file_id](msg)
 
-    def send_msg(self, chat_id: int, text: str, keyboard = None):
+        self.__current_chat_id = None
+
+    def __process_callback(self, json_callback: dict):
+        callback = types.CallbackQuery(json_callback)
+
+        self.__current_chat_id = callback.user.id
+
+        if callback.data in self.__callbacks:
+            self.__callbacks[callback.data](callback)
+
+        self.__current_chat_id = None
+
+
+    def send_msg(self, text: str, chat_id: int = None, keyboard = None, remove_reply:bool=False):
         msg_json = {
-            'chat_id': chat_id, 
+            'chat_id': chat_id if chat_id else self.__current_chat_id, 
             'text': text, 
+        }
+
+        if remove_reply:
+            msg_json['reply_markup'] = json.dumps({'remove_keyboard': True})
+
+        elif keyboard:
+            msg_json['reply_markup'] = json.dumps(keyboard.to_dict())
+
+        self.__get_method('sendMessage', msg_json)
+
+    def edit_msg_text(self, msg_id: int, text: str, chat_id: int = None, keyboard=None):
+        msg_json = {
+            'chat_id': chat_id if chat_id else self.__current_chat_id,
+            'message_id': msg_id,
+            'text': text
         }
 
         if keyboard:
             msg_json['reply_markup'] = json.dumps(keyboard.to_dict())
 
-        self.__get_method('sendMessage', msg_json)
+        self.__get_method('editMessageText', msg_json)
 
-    def send_sticker(self, chat_id: int, stick: str):
-        self.__get_method('sendSticker', {'chat_id': chat_id, 'sticker': stick})
+    def send_sticker(self, stick: str, chat_id: int = None):
+            self.__get_method('sendSticker', {
+                'chat_id': chat_id if chat_id else self.__current_chat_id, 
+                'sticker': stick
+            })
 
     def on_message(
             self, 
@@ -76,16 +113,16 @@ class Bot:
 
         def decorator(func):
             if text:
-                self.__text_cmds[text.lower()] = types._TextCmdOpt(func, reg, text)
+                self.__text_cmds[text.lower()] = types._TextOpt(func, reg, text)
 
             if texts:
                 for msg in texts:
-                    self.__text_cmds[msg.lower()] = types._TextCmdOpt(func, reg, msg)
+                    self.__text_cmds[msg.lower()] = types._TextOpt(func, reg, msg)
             
             if cmds:
                 for cmd in cmds:
                     cmd = '/' + cmd.split()[0]
-                    self.__text_cmds[cmd.lower()] = types._TextCmdOpt(func, False, cmd)
+                    self.__text_cmds[cmd.lower()] = types._TextOpt(func, False, cmd)
 
             if stickers:
                 for sticker in stickers:
@@ -96,12 +133,28 @@ class Bot:
 
         return decorator
 
+    def on_callback(self, data):
+        def decorator(func):
+            if type(data) is str:
+                self.__callbacks[data] = func
+            elif type(data) is list:
+                for d in data:
+                    self.__callbacks[d] = func
+
+        return decorator
+
     def run(self):
-        while True:
-            updates = self.__wait_updates()
+        try:
+            while True:
+                updates = self.__wait_updates()
 
-            for update in updates:
-                if 'message' in update:
-                    self.__process_message(update['message'])
+                for update in updates:
+                    if 'message' in update:
+                        self.__process_message(update['message'])
+                    
+                    elif 'callback_query' in update:
+                        self.__process_callback(update['callback_query'])
 
-                self.last_update = update['update_id']
+                    self.last_update = update['update_id']
+        except KeyboardInterrupt:
+            quit()
