@@ -11,7 +11,7 @@ bot = Bot('<tocken>')
 
 @bot.on_message( cmds=['start'] )
 def start(msg):
-  bot.send_msg(msg.chat.id, 'Bot started! :D')
+  bot.send_msg('Bot started! :D')
   
 bot.run()
 ```
