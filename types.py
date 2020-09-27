@@ -134,23 +134,16 @@ class _TextOpt:
             return text == self.orig
 
 class _CmdOpt:
-    def __init__(self, func, cmd: str, params: list = []):
-        self.func   = func
-        self.cmd    = cmd
-        self.params = params
+    def __init__(self, func, cmd: str):
+        self.func = func
 
-    @staticmethod
-    def process(pattern: str):
-        data = pattern.split()
+        self.with_data: bool = cmd[-1] == '~'
+        self.cmd = '/' + ( cmd[0:-1] if self.with_data else cmd ).lower()
 
-        cmd = data[0]
+    def parse(self, cmd_line: str):
+            temp = cmd_line.split(maxsplit=1)
 
-        params = pattern[1:]
-        for i in range( len(params) ):
-            if params[i][0] == '<' and params[i][-1] == '>':
-                param_type = params[i][1:-1]
-
-                if param_type == 'int':
-                    params[i] = int
-                elif param_type == 'str':
-                    params[i] = None
+            if len(temp) == 2:
+                return temp[1]
+            
+            return None

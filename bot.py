@@ -9,8 +9,9 @@ class Bot:
         self.url: str = f'https://api.telegram.org/bot{tocken}/'
         self.last_update: Int = 0
 
-        self.__text_cmds = {}
-        self.__stick_cmds = {}
+        self.__text_cmds   = {}
+        self.__cmd_cmds    = {}
+        self.__stick_cmds  = {}
         self.__global_cmds = {}
 
         self.__callbacks = {}
@@ -48,6 +49,15 @@ class Bot:
 
                 elif msg.text == self.__text_cmds[lower_text].orig:
                     self.__text_cmds[lower_text].func(msg)
+
+            splited_text = lower_text.split(maxsplit=1)[0]
+            if splited_text in self.__cmd_cmds:
+                cmd: types._CmdOpt = self.__cmd_cmds[splited_text]
+                
+                if cmd.with_data:
+                    cmd.func(msg, cmd.parse(msg.text))
+                else:
+                    cmd.func(msg)
 
         if msg.sticker:
             if 'sticker' in self.__global_cmds:
@@ -121,8 +131,8 @@ class Bot:
             
             if cmds:
                 for cmd in cmds:
-                    cmd = '/' + cmd.split()[0]
-                    self.__text_cmds[cmd.lower()] = types._TextOpt(func, False, cmd)
+                    cmd_opt = types._CmdOpt(func, cmd)
+                    self.__cmd_cmds[cmd_opt.cmd] = cmd_opt
 
             if stickers:
                 for sticker in stickers:
