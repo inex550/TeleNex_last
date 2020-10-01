@@ -1,5 +1,5 @@
 import requests
-from . import types
+from . import types, errors
 import json
 
 
@@ -14,7 +14,7 @@ class Bot:
         self.__stick_cmds  = {}
         self.__global_cmds = {}
 
-        self.__callbacks = {}
+        self.__callbacks   = {}
 
         self.__current_chat_id = None
 
@@ -91,7 +91,48 @@ class Bot:
         elif keyboard:
             msg_json['reply_markup'] = json.dumps(keyboard.to_dict())
 
-        self.__get_method('sendMessage', msg_json)
+        res = self.__get_method('sendMessage', msg_json)
+        if not res['ok']:
+            raise errors.TextMessageError(res)
+
+
+    def send_photo(self, photo: str, chat_id=None, caption=None):
+        msg_json = {
+            'chat_id': chat_id if chat_id else self.__current_chat_id,
+            'photo': photo
+        }
+
+        if caption:
+            msg_json['caption'] = caption
+
+        res = self.__get_method('sendPhoto', msg_json)
+        if res['ok'] == False:
+            raise errors.PhotoError(res)
+
+    
+    def send_audio(self, audio: str, chat_id=None, caption=None):
+        msg_json = {
+            'chat_id': chat_id if chat_id else self.__current_chat_id,
+            'audio': audio
+        }
+
+        if caption:
+            msg_json['caption'] = caption
+
+        res = self.__get_method('sendAudio', msg_json)
+        if res['ok'] == False:
+            raise errors.AudioError(res)
+
+
+    def send_sticker(self, stick: str, chat_id: int = None):
+        res = self.__get_method('sendSticker', {
+            'chat_id': chat_id if chat_id else self.__current_chat_id, 
+            'sticker': stick
+        })
+
+        if not res['ok']:
+            raise errors.StickerError(res)
+    
 
     def edit_msg_text(self, msg_id: int, text: str, chat_id: int = None, keyboard=None):
         msg_json = {
@@ -103,13 +144,10 @@ class Bot:
         if keyboard:
             msg_json['reply_markup'] = json.dumps(keyboard.to_dict())
 
-        self.__get_method('editMessageText', msg_json)
+        res = self.__get_method('editMessageText', msg_json)
+        if not res['ok']:
+            raise errors.EditMessageError(res)
 
-    def send_sticker(self, stick: str, chat_id: int = None):
-            self.__get_method('sendSticker', {
-                'chat_id': chat_id if chat_id else self.__current_chat_id, 
-                'sticker': stick
-            })
 
     def on_message(
             self, 

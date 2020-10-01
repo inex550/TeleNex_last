@@ -32,13 +32,13 @@ class Chat:
 
 class Sticker:
     def __init__(self, json_stick: dict):
-        self.file_id: str = json_stick.get('file_id')
+        self.file_id: str        = json_stick.get('file_id')
         self.file_unique_id: str = json_stick.get('file_unique_id')
-        self.width: int = json_stick.get('width')
-        self.height: int = json_stick.get('height')
-        self.is_animated: bool = json_stick.get('is_animated')
-        self.file_size: int = json_stick.get('file_size')
-        self.set_name: Int = json_stick.get('set_name')
+        self.width: int          = json_stick.get('width')
+        self.height: int         = json_stick.get('height')
+        self.is_animated: bool   = json_stick.get('is_animated')
+        self.file_size: int      = json_stick.get('file_size')
+        self.set_name: Int       = json_stick.get('set_name')
 
 class _KeyboardMarkupBase:
     def __init__(self, keyboard: list = None):
