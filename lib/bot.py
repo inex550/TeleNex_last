@@ -7,7 +7,7 @@ class Bot:
     def __init__(self, tocken):
         self.tocken: str = tocken
         self.url: str = f'https://api.telegram.org/bot{tocken}/'
-        self.last_update: Int = 0
+        self.last_update: int = 0
 
         self.__text_cmds   = {}
         self.__cmd_cmds    = {}
