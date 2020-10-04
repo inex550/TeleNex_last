@@ -16,6 +16,11 @@ def start(msg):
 bot.run()
 ```
 
+## Installation
+'''
+pip install TeleNex
+'''
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
