@@ -1,11 +1,11 @@
 # TeleNex
 
-teleNex is a Python library for easy making telegram bots
+TeleNex is a Python library for easy making telegram bots
 
 ## Usage
 
 ```python
-from TeleNex import Bot
+from teleNex import Bot
 
 bot = Bot('<tocken>')
 
@@ -18,7 +18,7 @@ bot.run()
 
 ## Installation
 ```
-pip install TeleNex
+pip install teleNex
 ```
 
 ## License
