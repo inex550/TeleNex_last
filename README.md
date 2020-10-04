@@ -17,9 +17,9 @@ bot.run()
 ```
 
 ## Installation
-'''
+```
 pip install TeleNex
-'''
+```
 
 ## License
 
