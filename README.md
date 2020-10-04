@@ -28,7 +28,7 @@ pip install teleNex
 ____
 
 ## Documentation
-
+[About Bot class](#about-bot-class)
 
 ### About Bot class
 Bot is the main TeleNex class. To import it you have to write:
