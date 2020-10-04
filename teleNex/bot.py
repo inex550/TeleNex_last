@@ -134,7 +134,7 @@ class Bot:
             raise errors.StickerError(res)
     
 
-    def edit_msg_text(self, msg_id: int, text: str, chat_id: int = None, keyboard=None):
+    def edit_msg(self, msg_id: int, text: str, chat_id: int = None, keyboard=None):
         msg_json = {
             'chat_id': chat_id if chat_id else self.__current_chat_id,
             'message_id': msg_id,
