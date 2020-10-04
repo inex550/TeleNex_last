@@ -1,6 +1,6 @@
 # TeleNex
 
-TeleNex is a Python library for easy making telegram bots
+teleNex is a Python library for easy making telegram bots
 
 ## Usage
 
