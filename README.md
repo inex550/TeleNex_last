@@ -41,7 +41,7 @@ To create a bot object, you need to write:
 ```python
 bot = Bot('<tocken>')
 ```
-<token> is a unique token for your bot. Can be obtained from @BotFather
+\<tocken\> is a unique token for your bot. Can be obtained from @BotFather
 
 To launch the bot, use the run function:
 ```python
