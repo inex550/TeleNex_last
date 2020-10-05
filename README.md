@@ -57,20 +57,20 @@ bot.run()
 
 The send_msg method is used to send text messages. For instance:
 ```python
-bot.send_msg('I'm the bot :D')
+bot.send_msg('I am the bot :D')
 ```
 
 By default, the message will be sent to the chat from which the last message was received
 
 You can also explicitly specify the chat_id and then the message will be sent to the desired chat. For instance:
 ```python
-bot.send_msg('I'm the bot :D', chat_id=<chat id>)
+bot.send_msg('I am the bot :D', chat_id=<chat id>)
 ```
 \<chat id\> - **integer** value - identifier of chat
 
 You can also add a keyboard option. For instance:
 ```python
-bot.send_msg('I'm the bot :D', keyboard=keyboard_object)
+bot.send_msg('I am the bot :D', keyboard=keyboard_object)
 ```
 How to create a keyboard object is described [here](#keyboard)
 ____
