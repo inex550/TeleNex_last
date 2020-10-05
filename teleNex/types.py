@@ -38,7 +38,7 @@ class Sticker:
         self.height: int         = json_stick.get('height')
         self.is_animated: bool   = json_stick.get('is_animated')
         self.file_size: int      = json_stick.get('file_size')
-        self.set_name: Int       = json_stick.get('set_name')
+        self.set_name: int       = json_stick.get('set_name')
 
 class _KeyboardMarkupBase:
     def __init__(self, keyboard: list = None):
@@ -53,11 +53,8 @@ class _KeyboardMarkupBase:
     def line(self, line):
         return self.keyboard[line]
 
-    def add_line(self, btns_line: list = None):
-        if btns_line:
-            self.keyboard.append(btns_line)
-        else:
-            self.keyboard.append([])
+    def add_line(self, *btns_line):
+        self.keyboard.append( list(btns_line) )
 
     def add_btn(self, btn, line = -1):
         self.keyboard[line].append(btn)

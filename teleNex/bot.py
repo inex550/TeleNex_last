@@ -6,7 +6,7 @@ import json
 class Bot:
     def __init__(self, tocken):
         self.tocken: str = tocken
-        self.url: str = f'https://api.telegram.org/bot{tocken}/'
+        self.url: str = f'https://api.telegram.org/bot' + tocken + '/'
         self.last_update: int = 0
 
         self.__text_cmds   = {}
@@ -79,7 +79,7 @@ class Bot:
         self.__current_chat_id = None
 
 
-    def send_msg(self, text: str, chat_id: int = None, keyboard = None, remove_reply:bool=False):
+    def send_msg(self, text: str, chat_id: int = None, keyboard: types._KeyboardMarkupBase = None, remove_reply:bool = False):
         msg_json = {
             'chat_id': chat_id if chat_id else self.__current_chat_id, 
             'text': text, 
@@ -96,7 +96,7 @@ class Bot:
             raise errors.TextMessageError(res)
 
 
-    def send_photo(self, photo: str, chat_id=None, caption=None):
+    def send_photo(self, photo: str, chat_id=None, caption=None, keyboard: types._KeyboardMarkupBase = None, remove_reply:bool=False):
         msg_json = {
             'chat_id': chat_id if chat_id else self.__current_chat_id,
             'photo': photo
@@ -105,12 +105,18 @@ class Bot:
         if caption:
             msg_json['caption'] = caption
 
+        if remove_reply:
+            msg_json['reply_markup'] = json.dumps({'remove_keyboard': True})
+
+        elif keyboard:
+            msg_json['reply_markup'] = json.dumps(keyboard.to_dict())
+
         res = self.__get_method('sendPhoto', msg_json)
         if res['ok'] == False:
             raise errors.PhotoError(res)
 
     
-    def send_audio(self, audio: str, chat_id=None, caption=None):
+    def send_audio(self, audio: str, chat_id=None, caption=None, keyboard: types._KeyboardMarkupBase = None, remove_reply:bool=False):
         msg_json = {
             'chat_id': chat_id if chat_id else self.__current_chat_id,
             'audio': audio
@@ -118,6 +124,12 @@ class Bot:
 
         if caption:
             msg_json['caption'] = caption
+
+        if remove_reply:
+            msg_json['reply_markup'] = json.dumps({'remove_keyboard': True})
+
+        elif keyboard:
+            msg_json['reply_markup'] = json.dumps(keyboard.to_dict())
 
         res = self.__get_method('sendAudio', msg_json)
         if res['ok'] == False:
