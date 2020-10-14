@@ -18,6 +18,9 @@ class Bot:
 
         self.__current_chat_id = None
 
+        self.__last_question = None
+        self.__on_answers = {}
+
     def __get_method(self, method: str, params: dict = {}) -> dict:
         response = requests.get(self.url + method, data=params)
         return response.json()
@@ -40,6 +43,10 @@ class Bot:
         if msg.text:
             if 'text' in self.__global_cmds:
                 self.__global_cmds['text'](msg)
+
+            if self.__last_question and self.__last_question in self.__on_answers:
+                self.__on_answers[self.__last_question](msg, msg.text)
+                self.__last_question = None
 
             lower_text = msg.text.lower()
 
@@ -144,7 +151,12 @@ class Bot:
 
         if not res['ok']:
             raise errors.StickerError(res)
+
     
+    def get_answer(self, question: str, qid: str, chat_id: int = None):
+        self.send_msg(question, chat_id)
+        self.__last_question = qid
+
 
     def edit_msg(self, msg_id: int, text: str, chat_id: int = None, keyboard=None):
         msg_json = {
@@ -202,6 +214,14 @@ class Bot:
                     self.__callbacks[d] = func
 
         return decorator
+
+
+    def on_answer(self, qid: str):
+        def decorator(func):
+            self.__on_answers[qid] = func
+
+        return decorator
+
 
     def run(self):
         try:
