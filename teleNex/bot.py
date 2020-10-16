@@ -45,8 +45,9 @@ class Bot:
                 self.__global_cmds['text'](msg)
 
             if self.__last_question and self.__last_question in self.__on_answers:
-                self.__on_answers[self.__last_question](msg, msg.text)
+                qid = self.__last_question
                 self.__last_question = None
+                self.__on_answers[qid](msg, msg.text)
 
             lower_text = msg.text.lower()
 

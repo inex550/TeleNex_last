@@ -2,4 +2,4 @@ from .bot import Bot
 from . import types 
 from . import errors
 
-__version__ = "1.2.0"
+__version__ = "1.2.1"
