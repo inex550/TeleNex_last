@@ -152,9 +152,10 @@ InlineKeyboardButton помимо теста может принимать та�
 Исправиленный вариант кода выше:
 ```python
 keyboard = types.InlineKeyboardMarkup([
-  [types.InlineKeyboardButton('Button 1', url='telegram.com'), types.InlineKeyboardButton('Button 2')],
-  [types.InlineKeyboardButton('Button 3'), types.InlineKeyboardButton('Button 4')]
+  [types.InlineKeyboardButton('Button 1', url='telegram.org'), types.InlineKeyboardButton('Button 2', url='telegram.org')],
+  [types.InlineKeyboardButton('Button 3', url='telegram.org'), types.InlineKeyboardButton('Button 4', url='telegram.org')]
 ])
+Теперь при нажатии на кнопку пользователь сможет перейти на сайт telegran
 ```
 ____
 
