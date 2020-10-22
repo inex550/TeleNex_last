@@ -1,10 +1,10 @@
 # TeleNex
 
-TeleNex is a Python library for easy making telegram bots
+TeleNex это Python модуль лёгкого создания Telegram ботов
 
 ____
 
-## Usage
+## Использование
 
 ```python
 from teleNex import Bot
@@ -20,59 +20,65 @@ bot.run()
 
 ____
 
-## Installation
+## Установка
 ```
 pip install teleNex
 ```
 
 ____
 
-## Documentation
-[About Bot class](#about-bot-class)
+## Документация
+[Про Bot class](#about-bot-class)
 
-[Methods](#methods)
+[Методы](#методы)
 > [send_msg](#send_msg)
+> [send_sticker](#send_sticker)
+> [send_image](#send_image)
+> [send_audio](#send_audio)
+[Типы](#)
+> [Message](#Message)
+> [InlineKeyboard](#InlineKeyboard)
+> [ReplyKeyboard](#ReplyKeyboard)
 
-### About Bot class
-Bot is the main TeleNex class. To import it you have to write:
+### Про Bot клас
+Bot это главный класс TeleNex, при помощи него отправляются сообщения и файлы. 
+Импортировать его можно так:
 ```python
 from teleNex import Bot
 ```
-This class contains all the necessary functions (which will be discussed further) for sending or receiving messages
 
-To create a bot object, you need to write:
+Создать объект бота можно так:
 ```python
 bot = Bot('<tocken>')
 ```
-\<tocken\> is a unique token for your bot. Can be obtained from @BotFather
+\<tocken\> уникальный индентификатор бота. Можно получить у @BotFather
 
-To launch the bot, use the run function:
+Чтобы запустить бота, используйте функцию run:
 ```python
 bot.run()
 ```
 
-### Methods
+### Методы
 
 #### send_msg
 
-The send_msg method is used to send text messages. For instance:
+Для отправки сообщений используется метод send_msg. Например:
 ```python
 bot.send_msg('I am the bot :D')
 ```
 
-By default, the message will be sent to the chat from which the last message was received
-
-You can also explicitly specify the chat_id and then the message will be sent to the desired chat. For instance:
+По умолчанию сообщение отправляется в чат, из которого было получено последнее сообщение
+Но вы так же можете явно указать id чата, в который хотите отправить сообщение при помощи параметры chat_id:
 ```python
 bot.send_msg('I am the bot :D', chat_id=<chat id>)
 ```
-\<chat id\> - **integer** value - identifier of chat
+\<chat id\> - Целочисленное значение - идентификатор чата
 
-You can also add a keyboard option. For instance:
+Вы так же можете добавить параметр keyboard для отправки клавиатуры:
 ```python
 bot.send_msg('I am the bot :D', keyboard=keyboard_object)
 ```
-How to create a keyboard object is described [here](#keyboard)
+Как создать клавиатуру рассказано [здесь](#keyboard)
 ____
 
 ## License
