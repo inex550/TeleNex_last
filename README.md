@@ -134,7 +134,7 @@ from teleNex import types
 #### InlineKeyboard
 InlineKeyboard используется для создания встроенной в сообщение клавиатуры
 
-Для создания клавиатуры используется класс InlineKeyboardMarkup. Для создания отдельных кнопок InlineKeyboardButton
+Для создания клавиатуры используется класс InlineKeyboardMarkup. Для создания отдельных кнопок InlineKeyboardButton:
 ```python
 keyboard = types.InlineKeyboardMarkup([
   [types.InlineKeyboardButton('Button 1'), types.InlineKeyboardButton('Button 2')],
@@ -157,6 +157,21 @@ keyboard = types.InlineKeyboardMarkup([
 ])
 Теперь при нажатии на кнопку пользователь сможет перейти на сайт telegran
 ```
+
+#### ReplyKeyboard
+ReplyKeyboard используется для создания клавиатуры, которая находится у пользователя под полем ввода
+
+Для создания такой клавиатуры используется класс ReplyKeyboardMarkup. Для создания отдельных кнопок KeyboardButton:
+```python
+keyboard = types.ReplyKeyboardMarkup([
+  [types.KeyboardButton('Button 1'), types.KeyboardButton('Button 2')],
+  [types.KeyboardButton('Button 3'), types.KeyboardButton('Button 4')]
+])
+```
+В конструктор ReplyKeyboardMarkup нужно передать двумерный массив кнопок (экземпляров класса KeyboardButton) \
+В конструктор KeyboardButton необходимо передать только текст, который будет отображаться на кнопке
+
+При нажатии на такую кнопку пользователем будет отправляться сообщение с текстом на кнопке, его можно обработать при помощи декоратора on_message
 ____
 
 ## License
