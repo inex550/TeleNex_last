@@ -42,8 +42,7 @@ ____
 
 [Декораторы](#декораторы)
 > [@on_message](#on_message) \
-> [@on_callback](#on_callback) \
-> [@on_answer](#on_answer)
+> [@on_callback](#on_callback)
 
 ### Про Bot клас
 Bot это главный класс TeleNex, при помощи него отправляются сообщения и файлы. 
@@ -214,6 +213,25 @@ def hello(msg):
 @on_message(text='Привет', reg = False)
 ```
 Теперь, при получении ботом сообщения приВеТ функцтя вызвана не будет, она будет вызвана только в случае, если пришло сообщение Привет
+
+Каждая функция, прикреплённая к декоратору on_message должна иметь один параметр. При вызове функции в этот параметр передаётся значение типа [Message](#message) - сообщение пользователя
+
+#### on_callback
+
+Декоратор on_callback может использоваться для обработки нажатий на InlineKeyboardButton. Если в конструкторе InlineKeyboardButton присвоить в параметр callback_data какое-либо строковое значение, то при нажатии на кнопку, это значение будет отправлено боту в виде [CallbackQuery](#callbackquery), который можно поймать и обработать при помощи декоратора on_callback. Пример:
+```python
+...
+keyboard = InlineKeyboardMarkup([
+  [InlineKeyboardButton('Click Me', callback_data='clickme')]
+])
+...
+@on_callback('clickme')
+def clickMe_clicked(cb):
+  bot.send_msg('Вы кликнули на Click Me')
+```
+В on_callback можно передать как одно значение, так и список
+
+Функция, прикреплённая к on_callback должна иметь один параметр. В этот параметр будет передаваться значение типа [CallbackQuery](#callbackquery) - пришедший callback при нажатии на кнопку
 ____
 
 ## License
