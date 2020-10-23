@@ -144,11 +144,19 @@ class Bot:
             raise errors.AudioError(res)
 
 
-    def send_sticker(self, stick: str, chat_id: int = None):
-        res = self.__get_method('sendSticker', {
+    def send_sticker(self, stick: str, chat_id: int = None, keyboard: types._KeyboardMarkupBase = None, remove_reply:bool=False):
+        msg_json = {
             'chat_id': chat_id if chat_id else self.__current_chat_id, 
             'sticker': stick
-        })
+        }
+
+        if remove_reply:
+            msg_json['reply_markup'] = json.dumps({'remove_keyboard': True})
+
+        elif keyboard:
+            msg_json['reply_markup'] = json.dumps(keyboard.to_dict())
+
+        res = self.__get_method('sendSticker', msg_json)
 
         if not res['ok']:
             raise errors.StickerError(res)
