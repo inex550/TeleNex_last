@@ -178,7 +178,7 @@ keyboard = types.ReplyKeyboardMarkup([
 
 Декоратор on_message используется для обработки пользовательских сообщений. Пример использования:
 ```python
-@on_message(text='Привет, бот')
+@bot.on_message(text='Привет, бот')
 def hello(msg):
   bot.send_msg('Привет, человек')
 ```
@@ -186,31 +186,31 @@ def hello(msg):
 Параметры декоратора: \
 **text** - Текст, при получении которого будет вызываться функция, прикреплённая к декоратору 
 ```python 
-@on_message(text='Привет')
+@bot.on_message(text='Привет')
 ```
 **texts** - Список сообщений, при получении которых будет вызываться функция, прикреплённая к декоратору
 ```python
-@on_message(texts=['Привет', 'Хай'])
+@bot.on_message(texts=['Привет', 'Хай'])
 ```
 **cmds** - Список команд, при получении которых будет вызываться функция, прикреплённая к декоратору
 ```python
-@on_message(cmds=['start', 'hello'])
+@bot.on_message(cmds=['start', 'hello'])
 ```
 **stickers** - Список file_id стикеров. При получении стикера с file_id, указанным в списке будет вызываться функция, прикреплённая к декоратору
 ```python
-@on_message(stickers=['CAACAgIAAxkBAAIBKl-S6V4tHIOifJync2dskxwbYFzhAAK2AAPA-wgAAQ8U9O_Fy4sLGwQ'])
+@bot.on_message(stickers=['CAACAgIAAxkBAAIBKl-S6V4tHIOifJync2dskxwbYFzhAAK2AAPA-wgAAQ8U9O_Fy4sLGwQ'])
 ```
 **msg_type** - Тип сообщения. Как значение можно указать только 'text', 'sticker' или 'all'. Если указано значение 'text', то при получении любого текстового сообщения будет вызываться функция, прикреплённая к декоратору. При значени 'sticker' функция будет вызываться при получении любого стикера. Если же указано значение 'all', функция будет вызываться при получении любого сообщения
 ```python
-@on_message(msg_type='text')
+@bot.on_message(msg_type='text')
 ```
 **reg** - Если присвоено True, то полученный текст будет обрабатываться вне зависимости от регистра. По умолчанию reg = True
 ```python
-@on_message(text='Привет', reg = True)
+@bot.on_message(text='Привет', reg = True)
 ``` 
 При получении ботом например приВеТ, функция, прикреплённая к декоратору будет вызвана, т.к. reg равен True
 ```python
-@on_message(text='Привет', reg = False)
+@bot.on_message(text='Привет', reg = False)
 ```
 Теперь, при получении ботом сообщения приВеТ функцтя вызвана не будет, она будет вызвана только в случае, если пришло сообщение Привет
 
@@ -225,7 +225,7 @@ keyboard = InlineKeyboardMarkup([
   [InlineKeyboardButton('Click Me', callback_data='clickme')]
 ])
 ...
-@on_callback('clickme')
+@bot.on_callback('clickme')
 def clickMe_clicked(cb):
   bot.send_msg('Вы кликнули на Click Me')
 ```
