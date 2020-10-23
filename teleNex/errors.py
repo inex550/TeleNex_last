@@ -18,3 +18,8 @@ class StickerError(_TelegramError):
 
 class EditMessageError(_TelegramError):
     pass
+
+class AnswerError(Exception):
+    def __init__(self, qid: str) -> None:
+        self.qid = qid
+        super().__init__(f'For \"{self.qid}\" question \"on_answer\" not created')

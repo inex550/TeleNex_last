@@ -1,7 +1,7 @@
 import requests
 from . import types, errors
 import json
-
+from typing import *
 
 class Bot:
     def __init__(self, tocken):
@@ -9,8 +9,8 @@ class Bot:
         self.url: str = f'https://api.telegram.org/bot' + tocken + '/'
         self.last_update: int = 0
 
-        self.__text_cmds   = {}
-        self.__cmd_cmds    = {}
+        self.__text_cmds: List[types._TextOpt]   = {}
+        self.__cmd_cmds: List[types._CmdOpt] = {}
         self.__stick_cmds  = {}
         self.__global_cmds = {}
 
@@ -19,7 +19,7 @@ class Bot:
         self.__current_chat_id = None
 
         self.__last_question = None
-        self.__on_answers = {}
+        self.__on_answers: List[types._AnswerOpt] = {}
 
     def __get_method(self, method: str, params: dict = {}) -> dict:
         response = requests.get(self.url + method, data=params)
@@ -44,10 +44,12 @@ class Bot:
             if 'text' in self.__global_cmds:
                 self.__global_cmds['text'](msg)
 
-            if self.__last_question and self.__last_question in self.__on_answers:
+            if self.__last_question:
                 qid = self.__last_question
-                self.__last_question = None
-                self.__on_answers[qid](msg, msg.text)
+
+                if msg.chat.id in self.__on_answers[qid].chat_ids:
+                    self.__last_question = None
+                    self.__on_answers[qid].func(msg)
 
             lower_text = msg.text.lower()
 
@@ -163,8 +165,14 @@ class Bot:
 
     
     def get_answer(self, question: str, qid: str, chat_id: int = None):
-        self.send_msg(question, chat_id)
-        self.__last_question = qid
+        if not qid in self.__on_answers:
+            raise errors.AnswerError(qid)
+        else:
+            chat_id = chat_id if chat_id else self.__current_chat_id
+
+            self.send_msg(question, chat_id)
+            self.__on_answers[qid].chat_ids.append(chat_id)
+            self.__last_question = qid
 
 
     def edit_msg(self, msg_id: int, text: str, chat_id: int = None, keyboard=None):
@@ -227,7 +235,7 @@ class Bot:
 
     def on_answer(self, qid: str):
         def decorator(func):
-            self.__on_answers[qid] = func
+            self.__on_answers[qid] = types._AnswerOpt(func)
 
         return decorator
 

@@ -1,3 +1,5 @@
+from typing import *
+
 class Message:
     def __init__(self, json_msg: dict):
         self.id: int    = json_msg.get('message_id')
@@ -125,7 +127,7 @@ class _TextOpt:
         self.orig = orig
 
     def check(self, text: str) -> bool:
-        if reg:
+        if self.reg:
             return text.lower() == self.orig.lower()
         else:
             return text == self.orig
@@ -144,3 +146,8 @@ class _CmdOpt:
                 return temp[1]
             
             return None
+
+class _AnswerOpt:
+    def __init__(self, func) -> None:
+        self.func = func
+        self.chat_ids = []

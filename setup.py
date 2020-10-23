@@ -1,10 +1,10 @@
 import setuptools
 import re
 
-with open('README.md', 'r') as f:
+with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
-with open("teleNex/__init__.py", 'r', encoding="utf8") as f:
+with open("teleNex/__init__.py", 'r', encoding="utf-8") as f:
     version = re.search(r'__version__ = "(.*?)"', f.read()).group(1)
 
 setuptools.setup(
