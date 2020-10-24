@@ -106,6 +106,8 @@ class Bot:
             err = errors.TextMessageError(res)
             if self.raise_errors: 
                 raise err
+            elif self.print_errors:
+                print(err.description)
 
 
     def send_photo(self, photo: str, chat_id=None, caption=None, keyboard: types._KeyboardMarkupBase = None, remove_reply:bool=False):
@@ -128,6 +130,8 @@ class Bot:
             err = errors.PhotoError(res)
             if self.raise_errors: 
                 raise err
+            elif self.print_errors:
+                print(err.description)
 
     
     def send_audio(self, audio: str, chat_id=None, caption=None, keyboard: types._KeyboardMarkupBase = None, remove_reply:bool=False):
@@ -150,6 +154,8 @@ class Bot:
             err = errors.AudioError(res)
             if self.raise_errors: 
                 raise err
+            elif self.print_errors:
+                print(err.description)
 
 
     def send_sticker(self, stick: str, chat_id: int = None, keyboard: types._KeyboardMarkupBase = None, remove_reply:bool=False):
@@ -170,6 +176,8 @@ class Bot:
             err = errors.StickerError(res)
             if self.raise_errors: 
                 raise err
+            elif self.print_errors:
+                print(err.description)
 
     
     def get_answer(self, question: str, qid: str, chat_id: int = None):
@@ -198,6 +206,8 @@ class Bot:
             err = errors.EditMessageError(res)
             if self.raise_errors: 
                 raise err
+            elif self.print_errors:
+                print(err.description)
 
 
     def on_message(
@@ -250,8 +260,9 @@ class Bot:
         return decorator
 
 
-    def run(self, raise_errors=True):
-        self.raise_errors = raise_errors
+    def run(self, raise_errors=True, print_errors=False):
+        self.raise_errors: bool = raise_errors
+        self.print_errors: bool = print_errors
         try:
             while True:
                 updates = self.__wait_updates()
