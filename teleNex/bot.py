@@ -103,7 +103,9 @@ class Bot:
 
         res = self.__get_method('sendMessage', msg_json)
         if not res['ok']:
-            raise errors.TextMessageError(res)
+            err = errors.TextMessageError(res)
+            if self.raise_errors: 
+                raise err
 
 
     def send_photo(self, photo: str, chat_id=None, caption=None, keyboard: types._KeyboardMarkupBase = None, remove_reply:bool=False):
@@ -123,7 +125,9 @@ class Bot:
 
         res = self.__get_method('sendPhoto', msg_json)
         if res['ok'] == False:
-            raise errors.PhotoError(res)
+            err = errors.PhotoError(res)
+            if self.raise_errors: 
+                raise err
 
     
     def send_audio(self, audio: str, chat_id=None, caption=None, keyboard: types._KeyboardMarkupBase = None, remove_reply:bool=False):
@@ -143,7 +147,9 @@ class Bot:
 
         res = self.__get_method('sendAudio', msg_json)
         if res['ok'] == False:
-            raise errors.AudioError(res)
+            err = errors.AudioError(res)
+            if self.raise_errors: 
+                raise err
 
 
     def send_sticker(self, stick: str, chat_id: int = None, keyboard: types._KeyboardMarkupBase = None, remove_reply:bool=False):
@@ -161,7 +167,9 @@ class Bot:
         res = self.__get_method('sendSticker', msg_json)
 
         if not res['ok']:
-            raise errors.StickerError(res)
+            err = errors.StickerError(res)
+            if self.raise_errors: 
+                raise err
 
     
     def get_answer(self, question: str, qid: str, chat_id: int = None):
@@ -187,7 +195,9 @@ class Bot:
 
         res = self.__get_method('editMessageText', msg_json)
         if not res['ok']:
-            raise errors.EditMessageError(res)
+            err = errors.EditMessageError(res)
+            if self.raise_errors: 
+                raise err
 
 
     def on_message(
@@ -240,7 +250,8 @@ class Bot:
         return decorator
 
 
-    def run(self):
+    def run(self, raise_errors=True):
+        self.raise_errors = raise_errors
         try:
             while True:
                 updates = self.__wait_updates()
