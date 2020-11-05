@@ -28,7 +28,7 @@ pip install teleNex
 ____
 
 ## Документация
-[Про Bot class](#about-bot-class)
+[Про Bot класс](#про-bot-класc)
 
 [Методы](#методы)
 > [send_msg](#send_msg) \
@@ -44,7 +44,7 @@ ____
 > [@on_message](#on_message) \
 > [@on_callback](#on_callback)
 
-### Про Bot клас
+### Про Bot класc
 Bot это главный класс TeleNex, при помощи него отправляются сообщения и файлы. 
 Импортировать его можно так:
 ```python
