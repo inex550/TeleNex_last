@@ -15,6 +15,7 @@ class Bot:
         self.__global_cmds = {}
 
         self.__callbacks   = {}
+        self.__callback_funcs = []
 
         self.__current_chat_id = None
 
@@ -85,6 +86,9 @@ class Bot:
 
         if callback.data in self.__callbacks:
             self.__callbacks[callback.data](callback)
+
+        for cbfunc, func in self.__callback_funcs:
+            if cbfunc(callback): func(callback)
 
         self.__current_chat_id = None
 
@@ -242,13 +246,17 @@ class Bot:
 
         return decorator
 
-    def on_callback(self, data):
+    def on_callback(self, data=None, cbfunc = None):
         def decorator(func):
-            if type(data) is str:
-                self.__callbacks[data] = func
-            elif type(data) is list:
-                for d in data:
-                    self.__callbacks[d] = func
+            if data is not None:
+                if type(data) is str:
+                    self.__callbacks[data] = func
+                elif type(data) is list:
+                    for d in data:
+                        self.__callbacks[d] = func
+            
+            if cbfunc is not None:
+                self.__callback_funcs.append( (cbfunc, func) )
 
         return decorator
 
