@@ -19,7 +19,7 @@ class Bot:
 
         self.__current_chat_id = None
 
-        self.__last_question = None
+        self.__last_questions = {}
         self.__on_answers: List[types._AnswerOpt] = {}
 
     def __get_method(self, method: str, params: dict = {}) -> dict:
@@ -45,12 +45,13 @@ class Bot:
             if 'text' in self.__global_cmds:
                 self.__global_cmds['text'](msg)
 
-            if self.__last_question:
-                qid = self.__last_question
+            if msg.chat.id in self.__last_questions:
+                qid = self.__last_questions[msg.chat.id]
 
-                if msg.chat.id in self.__on_answers[qid].chat_ids:
-                    self.__last_question = None
-                    self.__on_answers[qid].func(msg)
+                if qid in self.__on_answers:
+                    self.__on_answers[qid](msg)
+                
+                self.__last_questions.pop(msg.chat.id)
 
             lower_text = msg.text.lower()
 
@@ -190,9 +191,11 @@ class Bot:
         else:
             chat_id = chat_id if chat_id else self.__current_chat_id
 
-            self.send_msg(question, chat_id)
-            self.__on_answers[qid].chat_ids.append(chat_id)
-            self.__last_question = qid
+            self.__last_questions[chat_id] = qid
+
+            #self.send_msg(question, chat_id)
+            #self.__on_answers[qid].chat_ids.append(chat_id)
+            #self.__last_questions = qid
 
 
     def edit_msg(self, msg_id: int, text: str, chat_id: int = None, keyboard=None):
@@ -246,7 +249,7 @@ class Bot:
 
         return decorator
 
-    def on_callback(self, data=None, cbfunc = None):
+    def on_callback(self, data=None, cbfunc = None):    
         def decorator(func):
             if data is not None:
                 if type(data) is str:
@@ -263,7 +266,7 @@ class Bot:
 
     def on_answer(self, qid: str):
         def decorator(func):
-            self.__on_answers[qid] = types._AnswerOpt(func)
+            self.__on_answers[qid] = func
 
         return decorator
 
