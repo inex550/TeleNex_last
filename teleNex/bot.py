@@ -48,11 +48,10 @@ class Bot:
             if msg.chat.id in self.__last_questions:
                 qid = self.__last_questions[msg.chat.id]
 
+                self.__last_questions.pop(msg.chat.id)
+
                 if qid in self.__on_answers:
                     self.__on_answers[qid](msg)
-                
-                if self.__last_questions[msg.chat.id] == qid:
-                    self.__last_questions.pop(msg.chat.id)
 
             lower_text = msg.text.lower()
 
