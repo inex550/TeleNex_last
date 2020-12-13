@@ -51,7 +51,8 @@ class Bot:
                 if qid in self.__on_answers:
                     self.__on_answers[qid](msg)
                 
-                self.__last_questions.pop(msg.chat.id)
+                if self.__last_questions[msg.chat.id] == qid:
+                    self.__last_questions.pop(msg.chat.id)
 
             lower_text = msg.text.lower()
 
@@ -191,9 +192,9 @@ class Bot:
         else:
             chat_id = chat_id if chat_id else self.__current_chat_id
 
+            self.send_msg(question, chat_id)
             self.__last_questions[chat_id] = qid
 
-            #self.send_msg(question, chat_id)
             #self.__on_answers[qid].chat_ids.append(chat_id)
             #self.__last_questions = qid
 
